@@ -4,24 +4,44 @@
 
 class Shape {
 public:
-    Shape() { std::cout << "Constructor Shape" << std::endl; }
+    explicit Shape(std::string xd) : dx(std::move(xd)) {
+//        std::cout << "Constructor Shape" << std::endl;
+            std::cout << dx << std::endl;
+    }
 
-    virtual ~Shape() { std::cout << "Destructor Shape" << std::endl; }
+    virtual ~Shape() = default;
+//    {
+//        std::cout << "Destructor Shape" << std::endl;
+//    }
 
     virtual void printName() = 0;
 
     virtual double calcArea() = 0;
+    virtual void printArea() = 0;
+
+private:
+    std::string dx;
 };
+
 
 class Circle : public Shape {
 public:
-    explicit Circle (std::string name, double radius)
-                    : n_name((std::move(name), prom(radius)))
-                    { std::cout << "Constructor Circle" << std::endl; }
+    explicit Circle(std::string xd, std::string name, double radius)
+                    : Shape(std::move(xd)), n_name(std::move(name)), prom(radius)
+                    {
+//        std::cout << "Constructor Circle" << std::endl;
+                    }
 
-    ~Circle() override { std::cout << "Destructor Circle" << std::endl; }
+    ~Circle() override = default;
+//    {
+//        std::cout << "Destructor Circle" << std::endl;
+//    }
 
     void printName() override {std::cout << "My name is: " << n_name << std::endl; }
+
+    void printArea() override {
+        std::cout << "My area is: " << calcArea() << std::endl;
+    }
 
     double calcArea() override {
         return pi*prom*prom;
@@ -36,13 +56,22 @@ private:
 
 class Rectangle : public Shape{
 public:
-    explicit Rectangle  (std::string name, double length, double breadth)
-                        : n_name(std::move(name), a(length), b(breadth))
-                        { std::cout << "Constructor Rectangle" << std::endl; }
+    explicit Rectangle(std::string xd, std::string name, double length, double breadth)
+                        : Shape(std::move(xd)), n_name(std::move(name)), a(length), b(breadth)
+                        {
+//        std::cout << "Constructor Rectangle" << std::endl;
+                        }
 
-    ~Rectangle() override { std::cout << "Destructor Rectangle" << std::endl; }
+    ~Rectangle() override = default;
+//    {
+//        std::cout << "Destructor Rectangle" << std::endl;
+//    }
 
     void printName() override {std::cout << "My name is: " << n_name << std::endl; }
+
+    void printArea() override {
+        std::cout << "My area is: " << calcArea() << std::endl;
+    }
 
     double calcArea() override {
         return a*b;
@@ -57,14 +86,22 @@ private:
 
 class Triangle : public Shape{
 public:
-    explicit Triangle   (std::string name, double base, double height) :
-                        n_name(std::move(name), a(base), h(height))
-                        { std::cout << "Constructor Triangle" << std::endl; }
+    explicit Triangle   (std::string xd, std::string name, double base, double height) :
+                        Shape(std::move(xd)), n_name(std::move(name)), a(base), h(height)
+                        {
+//        std::cout << "Constructor Triangle" << std::endl;
+                        }
 
-    ~Triangle() override { std::cout << "Destructor Triangle" << std::endl; }
+    ~Triangle() override = default;
+//    {
+//        std::cout << "Destructor Triangle" << std::endl;
+//    }
 
     void printName() override {std::cout << "My name is: " << n_name << std::endl; }
 
+    void printArea() override {
+        std::cout << "My area is: " << calcArea() << std::endl;
+    }
     double calcArea() override {
         return a*h/2;
     }
@@ -95,7 +132,7 @@ int main() {
             std::cout << "Enter the radius of your circle: " << std::endl;
             double r;
             std::cin >> r;
-            vec.emplace_back(new Circle(input, r));
+            vec.emplace_back(new Circle(std::string(), input, r));
             ++counter;
             continue;
         }
@@ -106,7 +143,7 @@ int main() {
             std::cin >> a;
             double b;
             std::cin >> b;
-            vec.emplace_back(new Rectangle((input), a, b));
+            vec.emplace_back(new Rectangle(std::string(), (input), a, b));
             ++counter;
             continue;
         }
@@ -117,7 +154,7 @@ int main() {
             std::cin >> b;
             double h;
             std::cin >> h;
-            vec.emplace_back(new Triangle((input), b, h));
+            vec.emplace_back(new Triangle("xd", (input), b, h));
             ++counter;
             continue;
         }
@@ -131,7 +168,7 @@ int main() {
     for (auto& elem : vec)
     {
         elem->printName();
-        elem->calcArea();
+        elem->printArea();
     }
 
     for (auto elem : vec)
